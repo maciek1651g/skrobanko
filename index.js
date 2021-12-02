@@ -1,21 +1,7 @@
-const https = require("https");
-const options = {
-    hostname: "www.morele.net",
-    port: 443,
-    path: "/podstawka-chlodzaca-genesis-oxid-450-rgb-7138805/",
-    method: "GET",
-};
+import getPriceFromMoreleSite from "./getPriceFromMoreleSite.js";
 
-const req = https.request(options, (res) => {
-    console.log(`statusCode: ${res.statusCode}`);
+const price = await getPriceFromMoreleSite(
+    "https://www.morele.net/mysz-razer-naga-pro-rz01-03420100-r3g1-7244819/"
+);
 
-    res.on("data", (d) => {
-        process.stdout.write(d);
-    });
-});
-
-req.on("error", (error) => {
-    console.error(error);
-});
-
-req.end();
+console.log(price);
