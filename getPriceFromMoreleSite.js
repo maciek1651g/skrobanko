@@ -7,9 +7,9 @@ const getPriceFromMoreleSite = async (url) => {
 
         const reg =
             /id="product_price_brutto" itemprop="price" content="([\d\.]*)"/gm;
-        const arr = reg.exec(body);
-        if (arr) {
-            const price = parseFloat(arr[1]);
+        const arrayWithFoundTexts = reg.exec(body);
+        if (arrayWithFoundTexts) {
+            const price = parseFloat(arrayWithFoundTexts[1]);
             return price;
         }
     }

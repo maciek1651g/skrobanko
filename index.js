@@ -1,7 +1,7 @@
-import getPriceFromMoreleSite from "./getPriceFromMoreleSite.js";
+import getAllCategoriesFromMorele from "./getAllCategoriesFromMorele.js";
+import scanAllProductsInCategory from "./scanAllProductsInCategory.js";
+import connectWithDatabase from "./connectWithDatabase.js";
 
-const price = await getPriceFromMoreleSite(
-    "https://www.morele.net/mysz-razer-naga-pro-rz01-03420100-r3g1-7244819/"
-);
-
-console.log(price);
+//const categories = await getAllCategoriesFromMorele();
+//scanAllProductsInCategory(categories[0]);
+connectWithDatabase();
