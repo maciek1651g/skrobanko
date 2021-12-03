@@ -1,5 +1,5 @@
 import fetch from "node-fetch";
-import getPriceFromMoreleSite from "./getPriceFromMoreleSite.js";
+import getPriceAndSave from "./getPriceAndSave.js";
 
 const scanAllProductsInCategory = async (category) => {
     const categoryLink = "https://www.morele.net/kategoria/" + category + "/";
@@ -15,17 +15,13 @@ const scanAllProductsInCategory = async (category) => {
 
         if (arrayWithFoundTexts) {
             const countOfPages = parseInt(arrayWithFoundTexts[1]);
-
+            console.log(category);
             for (let i = 1; i <= countOfPages; i++) {
                 console.log("Strona: " + i);
                 const reg = /class="productLink" href="(.*?)"/gmu;
                 let productName;
                 while ((productName = reg.exec(body)) !== null) {
-                    const productLink = "https://www.morele.net" + productName[1];
-                    const price = await getPriceFromMoreleSite(productLink);
-                    console.log(price);
-                    //save record
-                    return;
+                    getPriceAndSave(productName[1], category);
                 }
 
                 if (i + 1 <= countOfPages) {

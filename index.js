@@ -1,7 +1,3 @@
-import getAllCategoriesFromMorele from "./getAllCategoriesFromMorele.js";
-import scanAllProductsInCategory from "./scanAllProductsInCategory.js";
-import connectWithDatabase from "./connectWithDatabase.js";
+import getAllProductsFromMorele from "./morele/getAllProductsFromMorele.js";
 
-//const categories = await getAllCategoriesFromMorele();
-//scanAllProductsInCategory(categories[0]);
-connectWithDatabase();
+getAllProductsFromMorele();
