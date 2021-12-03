@@ -1,7 +1,9 @@
 import fetch from "node-fetch";
 
 const getPriceFromMoreleSite = async (url) => {
-    const response = await fetch(url).catch((err) => console.log("Request error"));
+    const response = await fetch(url).catch((err) =>
+        console.log("Request error(price)")
+    );
     if (response) {
         const body = await response.text();
 

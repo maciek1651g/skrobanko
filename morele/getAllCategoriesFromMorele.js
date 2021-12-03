@@ -2,7 +2,7 @@ import fetch from "node-fetch";
 
 const getAllCategoriesFromMorele = async () => {
     const response = await fetch("https://www.morele.net/").catch((err) =>
-        console.log("Request error")
+        console.log("Request error(main page)")
     );
     if (response) {
         const body = await response.text();
