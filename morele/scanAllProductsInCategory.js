@@ -1,6 +1,5 @@
-import fetch from "node-fetch";
-import getAllPricesOnOnePage from "./getAllPricesOnOnePage.js";
 import getCountOfPages from "./getCountOfPages.js";
+import scanCategoryPage from "./scanCategoryPage";
 
 const scanAllProductsInCategory = async (category) => {
     const categoryLink = "https://www.morele.net/kategoria/" + category + "/";
@@ -11,14 +10,8 @@ const scanAllProductsInCategory = async (category) => {
         for (let i = 1; i <= countOfPages; i++) {
             console.log("Strona: " + i);
 
-            const response = await fetch(
-                categoryLink + ",,,,,,,,,,,,/" + i + "/"
-            ).catch((err) => console.log("Request error(category pages)"));
-
-            if (response) {
-                const body = await response.text();
-                getAllPricesOnOnePage(body, category);
-            }
+            const categoryPageLink = categoryLink + ",,,,,,,,,,,,/" + i + "/";
+            scanCategoryPage(categoryPageLink, category);
         }
     }
     return null;
