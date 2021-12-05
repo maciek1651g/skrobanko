@@ -1,17 +1,25 @@
 import getCountOfPages from "./getCountOfPages.js";
-import scanCategoryPage from "./scanCategoryPage";
+import getBody from "./getBody.js";
+import getAllPricesOnOnePage from "./getAllPricesOnOnePage.js";
 
 const scanAllProductsInCategory = async (category) => {
     const categoryLink = "https://www.morele.net/kategoria/" + category + "/";
-    const countOfPages = await getCountOfPages(categoryLink);
+    const firstCategoryPageBody = await getBody(categoryLink);
+    const countOfPages = await getCountOfPages(firstCategoryPageBody);
 
     if (countOfPages !== null) {
         console.log(category);
-        for (let i = 1; i <= countOfPages; i++) {
+
+        await getAllPricesOnOnePage(firstCategoryPageBody, category);
+
+        for (let i = 2; i <= countOfPages; i++) {
             console.log("Strona: " + i);
 
             const categoryPageLink = categoryLink + ",,,,,,,,,,,,/" + i + "/";
-            scanCategoryPage(categoryPageLink, category);
+            const categoryPageBody = await getBody(categoryPageLink);
+            if (categoryPageBody !== null) {
+                getAllPricesOnOnePage(categoryPageBody, category);
+            }
         }
     }
     return null;

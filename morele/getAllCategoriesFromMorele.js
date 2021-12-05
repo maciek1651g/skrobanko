@@ -1,12 +1,8 @@
-import fetch from "node-fetch";
+import getBody from "./getBody.js";
 
 const getAllCategoriesFromMorele = async () => {
-    const response = await fetch("https://www.morele.net/").catch((err) =>
-        console.log("Request error(main page)")
-    );
-    if (response) {
-        const body = await response.text();
-
+    const body = await getBody("https://www.morele.net/");
+    if (body !== null) {
         const reg = /href="\/kategoria\/(.*?)\/"/gmu;
         const arrayWithFoundTexts = body.match(reg);
 
