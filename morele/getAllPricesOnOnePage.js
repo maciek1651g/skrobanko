@@ -1,57 +1,59 @@
 import saveProduct from "./savePrice.js";
 
 const getAllPricesOnOnePage = async (body, category) => {
-    const productNames = getProductNames(body);
-    const productPrices = getProductPrices(body);
+    const products = getProductDivs(body);
 
-    if (
-        productNames &&
-        productPrices &&
-        productNames.length === productPrices.length &&
-        productPrices.length !== 0
-    ) {
-        for (let i = 0; i < productNames.length; i++) {
+    if (products?.length > 0) {
+        for (let i = 0; i < products.length; i++) {
             saveProduct(
-                productNames[i].substring(1, productNames[i].length - 1),
-                productPrices[i],
+                products[i].name.substring(1, products[i].name.length - 1),
+                products[i].price,
                 category
             );
         }
     } else {
-        console.log("Regexp error(price)");
-        console.log(productNames.length);
-        console.log(productPrices.length);
+        console.log("Regexp error(category page)");
     }
 };
 
-const getProductNames = (pageBody) => {
-    const reg = /data-click-href="\/.*?\/"|class="productLink" href="\/.*?\/"/gmu;
-    const productNamesSet = new Set();
-    let productNamesArray = pageBody.match(reg);
+const getProductDivs = (pageBody) => {
+    const reg = /<div class="cat-product [\S\s]+?Do koszyka/gm;
+    const divProducts = pageBody.match(reg);
+    const products = [];
 
-    if (productNamesArray !== null) {
-        for (let i = 0; i < productNamesArray.length; i++) {
-            productNamesSet.add(
-                productNamesArray[i].substring(
-                    productNamesArray[i].search("/"),
-                    productNamesArray[i].length - 1
-                )
-            );
+    if (divProducts !== null) {
+        for (let i = 0; i < divProducts.length; i++) {
+            let productName = null;
+            let productPrice = null;
+
+            const productNameRegex = /href="\/.*?\/"/gmu;
+            const productNames = divProducts[i].match(productNameRegex);
+            if (productNames !== null) {
+                productName = productNames[0].substring(
+                    6,
+                    productNames[0].length - 1
+                );
+            }
+
+            const priceRegex = /data-product-price="([\d\.]*?)"/gmu;
+            const prices = divProducts[i].match(priceRegex);
+            if (prices !== null) {
+                productPrice = parseFloat(
+                    prices[0].substring(20, prices[0].length - 1)
+                );
+            }
+
+            if (productName && productPrice) {
+                products.push({
+                    name: productName,
+                    price: productPrice,
+                });
+            } else {
+                console.log("Regexp error(price)");
+            }
         }
     }
 
-    return Array.from(productNamesSet);
-};
-
-const getProductPrices = (pageBody) => {
-    const reg = /data-product-price="([\d\.]*?)"/gmu;
-    const productPrices = [];
-    let productPrice;
-
-    while ((productPrice = reg.exec(pageBody)) !== null) {
-        productPrices.push(parseFloat(productPrice[1]));
-    }
-
-    return productPrices;
+    return products;
 };
 export default getAllPricesOnOnePage;
