@@ -35,6 +35,18 @@ const getProductDivs = (pageBody) => {
                 );
             }
 
+            if (productName === null) {
+                const productUsualNameRegex = /data-product-name="(.*?)"/gmu;
+                const productUsualName = divProducts[i].match(productUsualNameRegex);
+
+                if (productUsualName !== null) {
+                    productName = productUsualName[0].substring(
+                        19,
+                        productUsualName[0].length - 1
+                    );
+                }
+            }
+
             const priceRegex = /data-product-price="([\d\.]*?)"/gmu;
             const prices = divProducts[i].match(priceRegex);
             if (prices !== null) {
