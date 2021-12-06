@@ -4,43 +4,25 @@ const getAllPricesOnOnePage = async (body, category) => {
     const productNames = getProductNames(body);
     const productPrices = getProductPrices(body);
 
-    if (
-        productNames &&
-        productPrices &&
-        productNames.length === productPrices.length &&
-        productPrices.length !== 0
-    ) {
+    if (productNames.length === productPrices.length && productPrices.length !== 0) {
         for (let i = 0; i < productNames.length; i++) {
-            saveProduct(
-                productNames[i].substring(1, productNames[i].length - 1),
-                productPrices[i],
-                category
-            );
+            saveProduct(productNames[i], productPrices[i], category);
         }
     } else {
         console.log("Regexp error(price)");
-        console.log(productNames.length);
-        console.log(productPrices.length);
     }
 };
 
 const getProductNames = (pageBody) => {
-    const reg = /data-click-href="\/.*?\/"|class="productLink" href="\/.*?\/"/gmu;
-    const productNamesSet = new Set();
-    let productNamesArray = pageBody.match(reg);
+    const reg = /data-product-name="(.*?)"/gmu;
+    const productNames = [];
+    let productName;
 
-    if (productNamesArray !== null) {
-        for (let i = 0; i < productNamesArray.length; i++) {
-            productNamesSet.add(
-                productNamesArray[i].substring(
-                    productNamesArray[i].search("/"),
-                    productNamesArray[i].length - 1
-                )
-            );
-        }
+    while ((productName = reg.exec(pageBody)) !== null) {
+        productNames.push(productName[1]);
     }
 
-    return Array.from(productNamesSet);
+    return productNames;
 };
 
 const getProductPrices = (pageBody) => {
