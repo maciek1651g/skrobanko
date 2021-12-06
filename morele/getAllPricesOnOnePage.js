@@ -1,25 +1,57 @@
 import saveProduct from "./savePrice.js";
 
 const getAllPricesOnOnePage = async (body, category) => {
-    const reg = /class="productLink" href="(.*?)"/gmu;
-    let productName;
-    const products = [];
-    while ((productName = reg.exec(body)) !== null) {
-        products.push([productName[1]]);
+    const productNames = getProductNames(body);
+    const productPrices = getProductPrices(body);
+
+    if (
+        productNames &&
+        productPrices &&
+        productNames.length === productPrices.length &&
+        productPrices.length !== 0
+    ) {
+        for (let i = 0; i < productNames.length; i++) {
+            saveProduct(
+                productNames[i].substring(1, productNames[i].length - 1),
+                productPrices[i],
+                category
+            );
+        }
+    } else {
+        console.log("Regexp error(price)");
+        console.log(productNames.length);
+        console.log(productPrices.length);
+    }
+};
+
+const getProductNames = (pageBody) => {
+    const reg = /data-click-href="\/.*?\/"|class="productLink" href="\/.*?\/"/gmu;
+    const productNamesSet = new Set();
+    let productNamesArray = pageBody.match(reg);
+
+    if (productNamesArray !== null) {
+        for (let i = 0; i < productNamesArray.length; i++) {
+            productNamesSet.add(
+                productNamesArray[i].substring(
+                    productNamesArray[i].search("/"),
+                    productNamesArray[i].length - 1
+                )
+            );
+        }
     }
 
-    const reg2 = /data-price="([\d\.]*?)"/gmu;
+    return Array.from(productNamesSet);
+};
+
+const getProductPrices = (pageBody) => {
+    const reg = /data-product-price="([\d\.]*?)"/gmu;
+    const productPrices = [];
     let productPrice;
-    for (let i = 0; (productPrice = reg2.exec(body)) !== null; i++) {
-        products[i].push(productPrice[1]);
+
+    while ((productPrice = reg.exec(pageBody)) !== null) {
+        productPrices.push(parseFloat(productPrice[1]));
     }
 
-    for (let i = 0; i < products.length; i++) {
-        saveProduct(
-            products[i][0].substring(1, products[i][0].length - 1),
-            parseFloat(products[i][1]),
-            category
-        );
-    }
+    return productPrices;
 };
 export default getAllPricesOnOnePage;

@@ -10,19 +10,23 @@ const scanAllProductsInCategory = async (category) => {
     if (countOfPages !== null) {
         console.log(category);
 
-        await getAllPricesOnOnePage(firstCategoryPageBody, category);
+        getAllPricesOnOnePage(firstCategoryPageBody, category);
 
         for (let i = 2; i <= countOfPages; i++) {
             console.log("Strona: " + i);
 
             const categoryPageLink = categoryLink + ",,,,,,,,,,,,/" + i + "/";
-            const categoryPageBody = await getBody(categoryPageLink);
-            if (categoryPageBody !== null) {
-                getAllPricesOnOnePage(categoryPageBody, category);
-            }
+            await scanCategory(categoryPageLink, category);
         }
     }
     return null;
+};
+
+const scanCategory = async (categoryPageLink, category) => {
+    const categoryPageBody = await getBody(categoryPageLink);
+    if (categoryPageBody !== null) {
+        getAllPricesOnOnePage(categoryPageBody, category);
+    }
 };
 
 export default scanAllProductsInCategory;
