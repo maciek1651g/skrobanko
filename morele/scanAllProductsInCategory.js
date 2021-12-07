@@ -8,8 +8,6 @@ const scanAllProductsInCategory = async (category) => {
     const countOfPages = await getCountOfPages(firstCategoryPageBody);
 
     if (countOfPages !== null) {
-        console.log(category);
-
         getAllPricesOnOnePage(firstCategoryPageBody, category);
 
         for (let i = 2; i <= countOfPages; i++) {
