@@ -4,12 +4,19 @@ const getAllPricesOnOnePage = async (body, category) => {
     const products = getProductDivs(body);
 
     if (products?.length > 0) {
+        const tasks = [];
+
         for (let i = 0; i < products.length; i++) {
-            saveProduct(
-                products[i].name.substring(1, products[i].name.length - 1),
-                products[i].price,
-                category
+            tasks.push(
+                saveProduct(
+                    products[i].name.substring(1, products[i].name.length - 1),
+                    products[i].price,
+                    category
+                )
             );
+        }
+        for (let i = 0; i < tasks.length; i++) {
+            await tasks[i];
         }
     } else {
         console.log("Regexp error(category page)");

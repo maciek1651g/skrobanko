@@ -8,7 +8,7 @@ const db = pgp({
 
 const savePrice = async (name, price, category) => {
     const response = await db
-        .query("CALL public.addproductandprice($1, $2, $3)", [name, price, category])
+        .none("CALL public.addproductandprice($1, $2, $3)", [name, price, category])
         .catch((err) => {
             console.log("Database error");
         });
