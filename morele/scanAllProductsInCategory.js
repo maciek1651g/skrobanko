@@ -9,24 +9,20 @@ const scanAllProductsInCategory = async (category, categoryFilter) => {
 
     if (countOfPages !== null) {
         getAllPricesOnOnePage(firstCategoryPageBody, category);
-        const tasks = [];
 
         for (let i = 2; i <= countOfPages; i++) {
             console.log("Strona: " + i);
 
             const categoryPageLink = categoryLink + categoryFilter + "/" + i + "/";
-            tasks.push(await scanCategory(categoryPageLink, category));
+            await scanCategory(categoryPageLink, category);
         }
-        /*for (let i = 0; i < tasks.length; i++) {
-            await tasks[i];
-        }*/
     }
 };
 
 const scanCategory = async (categoryPageLink, category) => {
     const categoryPageBody = await getBody(categoryPageLink);
     if (categoryPageBody !== null) {
-        await getAllPricesOnOnePage(categoryPageBody, category);
+        getAllPricesOnOnePage(categoryPageBody, category);
     }
 };
 

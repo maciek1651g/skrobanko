@@ -1,22 +1,23 @@
 import saveProduct from "./savePrice.js";
+import Stream from "stream";
+
+const dataToSaveInDatabaseStream = new Stream.Duplex({ objectMode: true });
+dataToSaveInDatabaseStream._read = () => {};
+dataToSaveInDatabaseStream._write = (chunk, encoding, next) => {
+    saveProduct(chunk.name, chunk.price, chunk.category).then(next);
+};
+dataToSaveInDatabaseStream.pipe(dataToSaveInDatabaseStream);
 
 const getAllPricesOnOnePage = async (body, category) => {
     const products = getProductDivs(body);
 
     if (products?.length > 0) {
-        const tasks = [];
-
         for (let i = 0; i < products.length; i++) {
-            tasks.push(
-                saveProduct(
-                    products[i].name.substring(1, products[i].name.length - 1),
-                    products[i].price,
-                    category
-                )
-            );
-        }
-        for (let i = 0; i < tasks.length; i++) {
-            await tasks[i];
+            dataToSaveInDatabaseStream.push({
+                name: products[i].name.substring(1, products[i].name.length - 1),
+                price: products[i].price,
+                category: category,
+            });
         }
     } else {
         console.log("Regexp error(category page)");
